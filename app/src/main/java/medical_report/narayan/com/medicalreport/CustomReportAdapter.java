@@ -1,14 +1,10 @@
 package medical_report.narayan.com.medicalreport;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,20 +29,7 @@ public class CustomReportAdapter extends ArrayAdapter<Report> {
         // Lookup view for data population
         TextView tvName = (TextView) convertView.findViewById(R.id.textViewReport);
         // Populate the data into the template view using the data object
-        tvName.setText(report.date);
+        tvName.setText(report.recordName + " " + report.date);
         return convertView;
     }
-
-  /*  @Override
-    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
-        Intent i = new Intent(this, GenerateReportActivity.class);
-        String item = ((TextView)arg1).getText().toString();
-        //Toast.makeText(getBaseContext(), item, Toast.LENGTH_LONG).show();
-        i.putExtra("number",item);
-        startActivity(i);
-    }*/
-
-
-
 }

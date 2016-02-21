@@ -1,5 +1,8 @@
 package medical_report.narayan.com.medicalreport;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,27 +11,35 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 
 public class GenerateReportActivity extends AppCompatActivity {
 
+
+    private String message = "Record saved successfully";
+    private String recordDate;
+    static final int FROM_DATE_DIALOG_ID = 1;
     private ImageView imageView1;
     private String imageUri1;
     private Button saveButton;
     private EditText recordName;
     private EditText date;
     private EditText description;
+    private Button dateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,10 @@ public class GenerateReportActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        dateButton = (Button)findViewById(R.id.button1);
+        addListenerOnFromButton();
+
+
         recordName = (EditText)findViewById(R.id.record_name);
         date = (EditText)findViewById(R.id.date);
         description = (EditText)findViewById(R.id.description);
@@ -50,7 +65,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //openImage1();
+                openImage1();
             }
         });
 
@@ -103,13 +118,15 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     public void addReporttoList(Report report) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         ViewReportActivity.listItems.add(report);
+        this.finish();
     }
 
     public void openImage1() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(imageUri1), "image*//*");
+        intent.setDataAndType(Uri.parse(imageUri1), "image/*");
         startActivity(intent);
     }
 
@@ -138,6 +155,47 @@ public class GenerateReportActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
+    private void addListenerOnFromButton() {
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dialog = (DatePickerDialog) showDialog1(FROM_DATE_DIALOG_ID);
+                int yy = Calendar.getInstance().get(Calendar.YEAR);
+                int mm = Calendar.getInstance().get(Calendar.MONTH);
+                int dd = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+                dialog.updateDate(yy, mm, dd);
+                dialog.show();
+            }
+        });
+    }
+
+    private Dialog showDialog1(int id) {
+        switch (id) {
+            case FROM_DATE_DIALOG_ID:
+                // set date picker as current date
+                return new DatePickerDialog(this, fromDatePickerListener, 2016, 1, 1);
+
+        }
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener fromDatePickerListener
+            = new DatePickerDialog.OnDateSetListener() {
+
+        // when dialog box is closed, below method will be called.
+        public void onDateSet(DatePicker view, int selectedYear,
+                              int selectedMonth, int selectedDay) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(selectedDay).append("-").append(selectedMonth + 1).append("-")
+                    .append(selectedYear);
+
+            recordDate = builder.toString();
+
+            // set selected date into textview
+            date.setText(recordDate);
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -74,6 +74,16 @@
         android:id="@+id/button"
         android:layout_below="@+id/imageView1"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:drawableTop="@drawable/calendar_icon"
+        android:layout_above="@+id/description"
+        android:layout_toEndOf="@+id/date" />
+
 </RelativeLayout>
 </ScrollView>
 
